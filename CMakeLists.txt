@@ -4,4 +4,4 @@ project(PROJET_L2_SDD2_GEN_PHRASES C)
 set(CMAKE_C_STANDARD 11)
 
 add_executable(PROJET_L2_SDD2_GEN_PHRASES
-        main.c)
+        main.c dico_10_lignes.txt)
