@@ -14,7 +14,6 @@ t_tree addWord(char* string, t_tree* t){
     int i=1;
     while(string[i]!='\0'){
         if (pn->next[(int)string[i]-97] == NULL){
-            printf("new node\n");
             addNode(pn,string[i]);
         }
         pn = pn->next[(int)string[i]-97];
