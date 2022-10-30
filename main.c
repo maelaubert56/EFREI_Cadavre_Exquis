@@ -10,48 +10,18 @@
 
 int main(){
     srand(time(NULL));
+    t_tree t_nom, t_ver, t_adj, t_adv;
+    t_nom = createEmptyTree();
+    t_ver = createEmptyTree();
+    t_adj = createEmptyTree();
+    t_adv = createEmptyTree();
 
-    t_tree t = createEmptyTree();
+    int choice;
+    char dicos[][100] = {"..\\dictionnaire_non_accentue.txt","..\\dico_10_lignes.txt","..\\mots_courts.txt"};
+    printf("Quel dictionnaire voulez vous utiliser ?\n\t1) %s\n\t2) %s\n\t3) %s\nVotre choix : ",dicos[0],dicos[1],dicos[2]);
+    scanf("%d",&choice);
+    loadTrees(dicos[choice-1], t_nom, t_ver, t_adj, t_adv);
 
-
-    //TODO faire lpusieurs fonctions avec conditions pour creer plusieurs arbres
-    FILE* f = fopen("../dictionnaire_non_accentue.txt", "r");
-    if (f == NULL) {
-        printf("no such file.");
-        return 0;
-    }
-
-    //printf("content of this file are \n");
-    char buf[100];
-    while (fscanf(f, "%s %*s %*s ",buf)== 1) {
-        //printf("%s\n",buf);
-        addWord(buf,&t);
-    }
-    printf("\n\nDONE\n");
-    // Closing the file
-    fclose(f);
-
-
-
-
-    //addWord("marius", &t);
-    //addWord("mael", &t);
-    //addWord("a'-.-t",&t);
-    //addWord("amna",&t);
-
-    //addWord("a-t-il",&t);
-
-    for(int i=0;i<20;i++)printf("%s\n",findRandomWord(t));
-
-
-    /*
-    for(int i=0; i<28; i++){
-        if (t.root[(int)'a'-97]->next[i]!= NULL) printf(" %c |",t.root[(int)'a'-97]->next[i]->value);
-        else printf("(null) |");
-    }*/
-
-    //displayTree(t);
-
+    printf("%s %s %s %s\n",findRandomWord(t_nom),findRandomWord(t_adj),findRandomWord(t_ver),findRandomWord(t_nom));
     return 0;
-
 }

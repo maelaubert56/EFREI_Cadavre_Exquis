@@ -6,15 +6,14 @@
 
 
 
-typedef struct s_tree //TODO changer la structure
-{
-    p_node root[29];
+typedef struct s_tree{
+    p_node root;
 } t_tree, *p_tree;
 
 
 // vos prototypes
 t_tree createEmptyTree();
-void addWord(char*, t_tree*);
-
+void addWord(char*, char*, short int, char* , t_tree*);
+int loadTrees(char*, t_tree, t_tree, t_tree, t_tree);
 
 #endif //PROJET_L2_SDD2_GEN_PHRASES_CHARTREE_H
