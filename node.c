@@ -9,17 +9,19 @@ p_node createNode(char val){
     nouv->value = val;
     nouv->end = 0;
     nouv->depth=-1;
+    nouv->formes_flechies = NULL;
 
     for(int i=0;i<29;i++) nouv->next[i] = NULL;
     return nouv;
 }
 
-p_node_flechies createNodeFlechies(short int forme, char *forme_flechie)
+p_node_flechies createNodeFlechies(char* attribut, char *forme_flechie)
 {
     p_node_flechies nouv;
     nouv = (p_node_flechies)malloc(sizeof(t_node_flechies));
-    nouv->forme = forme;
-    nouv->forme_flechie = forme_flechie;
+    nouv->attribut = attribut;
+    nouv->mot = forme_flechie;
+    nouv->next = NULL;
     return nouv;
 }
 
@@ -40,62 +42,34 @@ void addNode(p_node pn, char val){
 }
 
 
-void addNodeFlechies(p_node pn, short int type, char* forme, char* forme_flechie){ //TODO bug sur les lignes avec plusieurs formes pour un mot fléchis
-    // diviser les formes
+void addNodeFlechies(p_node pn, short int type, char* attribut, char* forme_flechie){ //TODO bug sur les lignes avec plusieurs formes pour un mot fléchis
 
+    // si plusieurs attributs, on les sépare
+    printf("%s\t tous les attributs -> %s \n",forme_flechie, attribut);
     char delim[] = ":";
-    char *ptr = strtok(forme, delim);
-    while (ptr!=NULL) {
-        printf("%s ", ptr);
+    char *ptr = strtok(attribut, delim);
 
-        short int val_forme = formeCharToInt(type,ptr);
-        printf(" - %d\n",val_forme);
-        if(val_forme!=-1 && (pn->flechies[val_forme] == NULL)) pn->flechies[val_forme] = createNodeFlechies(val_forme, forme_flechie);
+    //on place la 1ere forme flechie
+    if (pn->formes_flechies==NULL){
+        pn->formes_flechies = createNodeFlechies(ptr, forme_flechie);
+        printf("\tajout de l'attribut %s a la forme %s \n",ptr,forme_flechie);
+        ptr = strtok(NULL, delim);
+    }
+
+    // on avance jusqu'a la fin de la liste
+    p_node_flechies pnf = pn->formes_flechies;
+    if (pnf!=NULL)while (pnf->next != NULL) pnf = pnf->next;
+
+    while (ptr!=NULL) {
+        printf("\tajout de l'attribut %s a la forme %s \n",ptr,forme_flechie);
+
+        pnf->next = createNodeFlechies(attribut, forme_flechie);
+        pnf = pnf->next;
+
+        //on passe au prochain attribut
         ptr = strtok(NULL, delim);
     }
     printf("\n\n\n");
-}
-
-short int formeCharToInt(short int type, char* forme){
-    short int val_forme;
-
-    char deli[] = "+";
-    char *ptr = strtok(forme, deli);
-
-    if(type == 3){
-        //ajout pour verbe
-        if(strcmp(ptr,"Inf")==0) val_forme = 0;
-        else if(strcmp(ptr,"IPre")==0) val_forme= 1;
-        else if(strcmp(ptr,"IImp")==0) val_forme= 7;
-        else if(strcmp(ptr,"SPre")==0) val_forme= 13;
-        else return -1;
-
-        ptr = strtok(NULL, deli);
-        if(strcmp(ptr,"SG")==0) val_forme+= 0;
-        else if(strcmp(ptr,"PL")==0) val_forme+= 3;
-        else return -1;
-
-
-        ptr = strtok(NULL, deli);
-        if(strcmp(ptr,"P1")==0) val_forme+= 0;
-        else if(strcmp(ptr,"P2")==0) val_forme+= 1;
-        else if(strcmp(ptr,"P3")==0) val_forme+= 2;
-        else return -1;
-
-    }else{ // noms et ajd
-        if(strcmp(ptr,"Mas")==0) val_forme= 0;
-        else if(strcmp(ptr,"Fem")==0) val_forme= 2;
-        else if(strcmp(ptr,"InvGen")==0) val_forme= 5;
-        else return -1;
-
-        ptr = strtok(NULL, deli);
-        if(strcmp(ptr,"SG")==0) val_forme+= 0;
-        else if(strcmp(ptr,"PL")==0) val_forme+= 1;
-        else if(strcmp(ptr,"InvPL")==0) val_forme+= 2;
-        else return -1;
-    }
-
-    return val_forme;
 }
 
 
