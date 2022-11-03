@@ -1,17 +1,27 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "node.h"
+#include <string.h>
 
-p_node createNode(char val)
-{
+p_node createNode(char val){
     p_node nouv;
     nouv = (p_node)malloc(sizeof(t_node));
     nouv->value = val;
     nouv->end = 0;
     nouv->depth=-1;
+    nouv->formes_flechies = NULL;
 
-    //nouv->left= nouv->right = NULL;
     for(int i=0;i<29;i++) nouv->next[i] = NULL;
+    return nouv;
+}
+
+p_node_flechies createNodeFlechies(char* attribut, char *forme_flechie)
+{
+    p_node_flechies nouv;
+    nouv = (p_node_flechies)malloc(sizeof(t_node_flechies));
+    nouv->attribut = attribut;
+    nouv->mot = forme_flechie;
+    nouv->next = NULL;
     return nouv;
 }
 
@@ -32,6 +42,35 @@ void addNode(p_node pn, char val){
 }
 
 
+void addNodeFlechies(p_node pn, short int type, char* attribut, char* forme_flechie){ //TODO bug sur les lignes avec plusieurs formes pour un mot fléchis
+
+    // si plusieurs attributs, on les sépare
+    printf("%s\t tous les attributs -> %s \n",forme_flechie, attribut);
+    char delim[] = ":";
+    char *ptr = strtok(attribut, delim);
+
+    //on place la 1ere forme flechie
+    if (pn->formes_flechies==NULL){
+        pn->formes_flechies = createNodeFlechies(ptr, forme_flechie);
+        printf("\tajout de l'attribut %s a la forme %s \n",ptr,forme_flechie);
+        ptr = strtok(NULL, delim);
+    }
+
+    // on avance jusqu'a la fin de la liste
+    p_node_flechies pnf = pn->formes_flechies;
+    if (pnf!=NULL)while (pnf->next != NULL) pnf = pnf->next;
+
+    while (ptr!=NULL) {
+        printf("\tajout de l'attribut %s a la forme %s \n",ptr,forme_flechie);
+
+        pnf->next = createNodeFlechies(attribut, forme_flechie);
+        pnf = pnf->next;
+
+        //on passe au prochain attribut
+        ptr = strtok(NULL, delim);
+    }
+    printf("\n\n\n");
+}
 
 
 
