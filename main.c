@@ -20,7 +20,7 @@ int main(int argc, char *argv[]){
     if(OS_Windows)SetConsoleOutputCP(65001); // affichage des caractères en UTF-8 pour inclure les accents
     printf("test accents:\né\nà\në\nê\n\n");
 
-
+    //TODO REGARDER TODO node.h
 
     srand(time(NULL)); // initialisation du random
 
@@ -30,7 +30,7 @@ int main(int argc, char *argv[]){
     t_ver = createEmptyTree();
     t_adj = createEmptyTree();
     t_adv = createEmptyTree();
-    t_tree tree[4] = {t_nom,t_adj,t_ver,t_adv};
+    t_tree trees[4] = {t_nom,t_adj,t_ver,t_adv};
 
 
     int choice, continuer=1;
@@ -46,14 +46,14 @@ int main(int argc, char *argv[]){
 
     //remplissage des arbres de donnee selon le dictionnaire choisis
 
-    loadTrees(dicos[choice-1], tree);
+    loadTrees(dicos[choice-1], trees);
 
 
     //test
-    printf("%s\n",findRandomWord(t_ver));
-    printf("%s\n",findRandomWord(t_ver));
-    printf("%s\n",findRandomWord(t_ver));
-    printf("%s\n\n",findRandomWord(t_ver));
+    printf("%s\n",findRandomWord(trees,3));
+    printf("%s\n",findRandomWord(trees,3));
+    printf("%s\n",findRandomWord(trees,3));
+    printf("%s\n\n",findRandomWord(trees,3));
 
 
 
@@ -65,8 +65,17 @@ int main(int argc, char *argv[]){
         scanf("%d", &choice);
         switch (choice) {
             case 1: {
-                printf("1\n");
+                char* string;
+                printf("Voulez vous \n\t1) un nom\n\t2) un adjectif\n\t3) un verbe\n\t4) un adverbe\n\t5) indifférent\n\t->");
+                scanf("%d", &choice);
+                printf("Entrez un début de mot, et nous vous trouverons une fin corespondante.\n(pour un mot au hasard, tapez juste \"0\")\n\t->");
+                scanf("%s", string);
+
+                if(string[0]=='0') string = findRandomWord(trees,choice);
+                else string = findEndOfWord(trees, string, choice);
+                printf("Votre mot est : %s\n",string);
                 break;
+
             }case 2: {
                 printf("2\n");
                 break;
@@ -77,7 +86,7 @@ int main(int argc, char *argv[]){
                 continuer = 0;
                 break;
             }default : {
-                printf("Vous devez entrer une valeur entre 1 et 3...\n");
+                printf("\tErreur...\nVous devez entrer une valeur entre 1 et 3...\n");
                 break;
             }
         }

@@ -1,0 +1,22 @@
+Avancement du projet:
+
+1) STRUCTURE
+    Mettre en place les bases de donnée ✔
+    Stocker les formes de base ✔
+    Stocker les formes fléchies
+    Proposer l'ajout des mots avec accents
+
+2) EXTRACTION
+    Proposer une recherche de mot parmis les formes de base ✔
+    Extraire une forme de base au hasard ✔
+
+3) GENERATION DE PHRASES
+    Générer des phrases au hasard: (modèles: : nom – adjectif – verbe – nom & : nom – ‘qui’ – verbe – verbe – nom – adjectif )
+        Avec les formes de base
+        Avec les formes fléchies (conjugée et accordées [3eme personne vu le modele])
+    - bonus : ajouter des modèles de phrases plus complèxes
+    - bonus : informer l'utilisateur qu'une forme fléchie manque et lui proposer de l'ajouter (à la main ou automatiquement reecrire le fichier [mieux])
+
+4) EXTRACTION AVANCEE
+    Proposer une recherche de mot parmis les formes fléchies (backtracking)
+    - bonus : complétion automatique

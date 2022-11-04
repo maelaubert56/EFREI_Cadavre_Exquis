@@ -7,7 +7,7 @@
 
 int loadTrees(char* file, t_tree tree[4]){
 
-    printf("\n\n\tcreation de l'arbre\n");
+    printf("\n\n\tcreation des arbres\n");
 
     FILE* f = fopen(file, "r");
     if (f == NULL) {
@@ -55,7 +55,7 @@ void addWord(char* forme_flechie, char* forme_de_base,short int type, char* form
     // on parcours la forme de base lettre par lettre
     while(forme_de_base[i]!='\0'){
         // on ajoute les caracteres classiques
-            if (((int)forme_de_base[i]>=97)&&((int)forme_de_base[i]<=122)){
+        if (((int)forme_de_base[i]>=97)&&((int)forme_de_base[i]<=122)){
             if(pn->next[(int)forme_de_base[i]-97] == NULL) addNode(pn,forme_de_base[i]);
             pn = pn->next[(int)forme_de_base[i]-97];
         }
@@ -71,10 +71,7 @@ void addWord(char* forme_flechie, char* forme_de_base,short int type, char* form
             pn = pn->next[28];
         }else{
             printf("\n\nERREUR: Caractère non pris en charge dans \"%s\"",forme_de_base);
-            printf("\t%s",forme_de_base[i]);
-            printf("%c",forme_de_base[i]);
             exit(1);
-            return;
         }
         i++;
         pn->end=0;
@@ -82,5 +79,8 @@ void addWord(char* forme_flechie, char* forme_de_base,short int type, char* form
 
     // au dernier caractere, on ajoute la formes flechie du mot
     pn->end = 1;
+    if(pn->formes_flechies!=NULL)printf("%s\n", pn->formes_flechies->mot);
     addNodeFlechies(pn, type, forme, forme_flechie);
+    printf("%s\n", pn->formes_flechies->mot);
+    printf("\n\n\n");
 }

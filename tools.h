@@ -6,8 +6,8 @@
 #include <stdio.h>
 #include <time.h>
 
-char* findRandomWord(t_tree);
-char* findEndOfWord(t_tree, char*);
+char* findRandomWord(t_tree*, int );
+char* findEndOfWord(t_tree*, char*, int );
 
 
 
