@@ -6,9 +6,22 @@
 #include "displaytree.h"
 #include "time.h"
 #include "tools.h"
+#include <wchar.h>
+
+#ifdef _WIN32
+    #define OS_Windows 1
+    #include <windows.h>
+#endif
+#ifdef __unix__
+    #define OS_Windows 0
+#endif
+
+int main(int argc, char *argv[]){
+    if(OS_Windows)SetConsoleOutputCP(65001); // affichage des caractères en UTF-8 pour inclure les accents
+    printf("test accents:\né\nà\në\nê\n\n");
 
 
-int main(){
+
     srand(time(NULL)); // initialisation du random
 
     //initialisation des arbres de donnee
@@ -17,17 +30,17 @@ int main(){
     t_ver = createEmptyTree();
     t_adj = createEmptyTree();
     t_adv = createEmptyTree();
-    t_tree tree[4] = {t_nom,t_ver,t_adj,t_adv};
+    t_tree tree[4] = {t_nom,t_adj,t_ver,t_adv};
 
 
     int choice, continuer=1;
 
     // choix parmis la liste des differents dictionnaires proposés
-    char dicos[3][100] = {"..\\dictionnaire_non_accentue.txt","..\\dico_10_lignes.txt","..\\mots_courts.txt"};
-    printf("Quel dictionnaire voulez vous utiliser ?\n\t1) %s\n\t2) %s\n\t3) %s\nVotre choix :",dicos[0],dicos[1],dicos[2]);
+    char dicos[4][100] = {"..\\dictionnaire.txt","..\\dictionnaire_non_accentue.txt","..\\dico_10_lignes.txt","..\\mots_courts.txt"};
+    printf("Quel dictionnaire voulez vous utiliser ?\n\t1) %s\n\t2) %s\n\t3) %s\n\t4) %s\n   ->",dicos[0],dicos[1],dicos[2],dicos[3]);
     scanf("%d",&choice);
     while(choice<1 || choice>3){
-        printf("\tErreur...\n\nQuel dictionnaire voulez vous utiliser ?\n\t1) %s\n\t2) %s\n\t3) %s\nVotre choix :",dicos[0],dicos[1],dicos[2]);
+        printf("\tErreur...\n\nQuel dictionnaire voulez vous utiliser ?\n\t1) %s\n\t2) %s\n\t3) %s\n\t4) %s\nVotre choix :",dicos[0],dicos[1],dicos[2],dicos[3]);
         scanf("%d",&choice);
     }
 
@@ -37,7 +50,10 @@ int main(){
 
 
     //test
-    printf("nom: %s; adj: %s; ver: %s\n",findRandomWord(t_nom),findRandomWord(t_adj),findRandomWord(t_ver));
+    printf("%s\n",findRandomWord(t_ver));
+    printf("%s\n",findRandomWord(t_ver));
+    printf("%s\n",findRandomWord(t_ver));
+    printf("%s\n\n",findRandomWord(t_ver));
 
 
 
@@ -45,7 +61,7 @@ int main(){
 
     //menu
     while(continuer) {
-        printf("Que voulez-vous faire ?\n\t1) Rechercher un mot (forme de base)\n\t2) Extraire une forme de base au hasard.\n\t3) Generer une phrase\n\t4) Quitter\nVotre choix : ");
+        printf("Que voulez-vous faire ?\n\t1) Rechercher un mot (forme de base)\n\t2) Extraire une forme de base au hasard.\n\t3) Generer une phrase\n\t4) Quitter\n   ->");
         scanf("%d", &choice);
         switch (choice) {
             case 1: {

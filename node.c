@@ -45,14 +45,12 @@ void addNode(p_node pn, char val){
 void addNodeFlechies(p_node pn, short int type, char* attribut, char* forme_flechie){ //TODO bug sur les lignes avec plusieurs formes pour un mot fléchis
 
     // si plusieurs attributs, on les sépare
-    printf("%s\t tous les attributs -> %s \n",forme_flechie, attribut);
     char delim[] = ":";
     char *ptr = strtok(attribut, delim);
 
     //on place la 1ere forme flechie
     if (pn->formes_flechies==NULL){
         pn->formes_flechies = createNodeFlechies(ptr, forme_flechie);
-        printf("\tajout de l'attribut %s a la forme %s \n",ptr,forme_flechie);
         ptr = strtok(NULL, delim);
     }
 
@@ -61,7 +59,6 @@ void addNodeFlechies(p_node pn, short int type, char* attribut, char* forme_flec
     if (pnf!=NULL)while (pnf->next != NULL) pnf = pnf->next;
 
     while (ptr!=NULL) {
-        printf("\tajout de l'attribut %s a la forme %s \n",ptr,forme_flechie);
 
         pnf->next = createNodeFlechies(attribut, forme_flechie);
         pnf = pnf->next;
@@ -69,7 +66,6 @@ void addNodeFlechies(p_node pn, short int type, char* attribut, char* forme_flec
         //on passe au prochain attribut
         ptr = strtok(NULL, delim);
     }
-    printf("\n\n\n");
 }
 
 

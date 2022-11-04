@@ -3,21 +3,25 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+
 int loadTrees(char* file, t_tree tree[4]){
 
-    printf("Creation de l'arbre.\n");
+    printf("\n\n\tcreation de l'arbre\n");
 
     FILE* f = fopen(file, "r");
     if (f == NULL) {
-        printf("le fichier n'existe pas.\n");
+        printf("\tERREUR : le fichier n'existe pas\n");
         return 0;
     }
     rewind(f); // on met le curseur au début du fichier
 
     char forme_flechie[100], forme_de_base[100], attribut[100];
     short int type=0;
+
     // on lit chaque ligne jusqu'a la fin du fichier
     while (fscanf(f, "%s %s %s ",forme_flechie,forme_de_base,attribut)==3){
+
         // on recupere le type de mot grace aux 3 premieres lettres de l'attribut
         char prefixe[4];
         for(int i=0;i<3;i++)prefixe[i]=attribut[i];
@@ -27,13 +31,11 @@ int loadTrees(char* file, t_tree tree[4]){
         else if(strcmp(prefixe,"Adj")==0) type = 2;
         else if(strcmp(prefixe,"Ver")==0) type = 3;
         else if(strcmp(prefixe,"Adv")==0) type = 4;
-
-        //
         char *forme = attribut + 4;
 
-        addWord(forme_flechie, forme_de_base,type,forme,&tree[type-1]);
+        if(type!=0) addWord(forme_flechie, forme_de_base,type,forme,&(tree[type-1]));
     }
-    printf("fait.\n");
+    printf("\tarbres crees avec succes\n\n");
     // Closing the file
     fclose(f);
     return 1;
@@ -53,7 +55,7 @@ void addWord(char* forme_flechie, char* forme_de_base,short int type, char* form
     // on parcours la forme de base lettre par lettre
     while(forme_de_base[i]!='\0'){
         // on ajoute les caracteres classiques
-        if (forme_de_base[i] != '-' && forme_de_base[i] != '.'&& forme_de_base[i] != '\''){
+            if (((int)forme_de_base[i]>=97)&&((int)forme_de_base[i]<=122)){
             if(pn->next[(int)forme_de_base[i]-97] == NULL) addNode(pn,forme_de_base[i]);
             pn = pn->next[(int)forme_de_base[i]-97];
         }
@@ -67,6 +69,12 @@ void addWord(char* forme_flechie, char* forme_de_base,short int type, char* form
         }else if (forme_de_base[i] == '\'') {
             if (pn->next[28] == NULL) addNode(pn, forme_de_base[i]);
             pn = pn->next[28];
+        }else{
+            printf("\n\nERREUR: Caractère non pris en charge dans \"%s\"",forme_de_base);
+            printf("\t%s",forme_de_base[i]);
+            printf("%c",forme_de_base[i]);
+            exit(1);
+            return;
         }
         i++;
         pn->end=0;
