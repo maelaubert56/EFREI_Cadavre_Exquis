@@ -48,7 +48,7 @@ int main(int argc, char *argv[]){
 
     loadTrees(dicos[choice-1], trees);
 
-
+/*
     //test
     printf("%s\n",findRandomWord(trees,3));
     printf("%s\n",findRandomWord(trees,3));
@@ -102,5 +102,5 @@ int main(int argc, char *argv[]){
         }
     }
     printf("\n\tA bientot ;)");
-    return 0;
+    return 0;*/
 }

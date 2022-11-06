@@ -49,31 +49,36 @@ t_tree createEmptyTree(){
 
 void addWord(char* forme_flechie, char* forme_de_base,short int type, char* forme , t_tree* t) {
     p_node pn = t->root;
+    p_node temp;
+    int i = 0, founded;
 
-    int i = 0;
     // on parcours la forme de base lettre par lettre
     while (forme_de_base[i] != '\0') {
-        // on ajoute les caracteres classiques
-        if (((int) forme_de_base[i] >= 97) && ((int) forme_de_base[i] <= 122)) {
-            if (pn->next[(int) forme_de_base[i] - 97] == NULL) addNode(pn, forme_de_base[i]);
-            pn = pn->next[(int) forme_de_base[i] - 97];
+        // on vérifie que le caractère n'est pas déja présent
+        temp = pn->kid;
+        if (temp == NULL){  // si le noeud n'a aucun enfant
+            addNode(pn, forme_de_base[i], 1);
+            pn->nb_kids+=1;
+            pn = pn->kid;
         }
-            // puis les caracteres speciaux
-        else if (forme_de_base[i] == '-') {
-            if (pn->next[26] == NULL) addNode(pn, forme_de_base[i]);
-            pn = pn->next[26];
-        } else if (forme_de_base[i] == '.') {
-            if (pn->next[27] == NULL) addNode(pn, forme_de_base[i]);
-            pn = pn->next[27];
-        } else if (forme_de_base[i] == '\'') {
-            if (pn->next[28] == NULL) addNode(pn, forme_de_base[i]);
-            pn = pn->next[28];
-        } else {
-            printf("\n\nERREUR: Caractère non pris en charge dans \"%s\"", forme_de_base);
-            exit(1);
+        else { // sinon on parcours tt les frères jusqu'à trouver
+            founded = 0;
+            while (founded == 0) {
+                if (temp->value == forme_de_base[i]) founded = 1;
+                else if (temp->sibling != NULL) temp = temp->sibling;
+                else founded = -1;
+            }
+            if (founded == -1) { // si on a pas trouvé on cré un frère au noeud courant
+                addNode(temp, forme_de_base[i], 0);
+                pn->nb_kids+=1;
+                temp=temp->sibling;
+
+            }
+
+            pn = temp;
         }
+
         i++;
-        pn->end = 0;
     }
 
     // au dernier caractere, on ajoute la formes flechie du mot

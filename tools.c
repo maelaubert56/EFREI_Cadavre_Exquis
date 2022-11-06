@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
-
+/*
 char* findEndOfWord(t_tree* trees, char* beginStr, int num_tree){
     int k,max;
     if(num_tree != 5) {
@@ -120,4 +120,4 @@ char* findRandomWord(t_tree* trees, int num_tree){
 }
 
 
-
+*/
