@@ -15,6 +15,6 @@ typedef struct s_tree{
 // vos prototypes
 t_tree createEmptyTree();
 void addWord(char*, char*, short int, char* , t_tree*);
-int loadTrees(char*, t_tree [4]);
+void loadTrees(char*, t_tree [4]);
 
 #endif //PROJET_L2_SDD2_GEN_PHRASES_CHARTREE_H

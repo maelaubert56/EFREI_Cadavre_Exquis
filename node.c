@@ -16,12 +16,16 @@ p_node createNode(char val){
     return nouv;
 }
 
-p_node_flechies createNodeFlechies(char attribut[], char forme_flechie[]){
+p_node_flechies createNodeFlechies(char* attribut, char* forme_flechie){
     p_node_flechies nouv;
     nouv = (p_node_flechies)malloc(sizeof(t_node_flechies));
+    nouv->mot = (char*)malloc((strlen(forme_flechie)+1)*sizeof(char));
+    nouv->attribut = (char*)malloc((strlen(attribut)+1)*sizeof(char));
     //TODO probleme ici, prends tjr le ptr vers attribut donc quand attribut change toutes les formes fléchies changent
-    nouv->attribut = attribut;
-    nouv->mot = forme_flechie;
+    /*nouv->attribut = attribut;
+    nouv->mot = forme_flechie;*/
+    strcpy(nouv->attribut,attribut);
+    strcpy(nouv->mot,forme_flechie);
     nouv->next = NULL;
     return nouv;
 }
@@ -58,9 +62,7 @@ void addNodeFlechies(p_node pn, short int type, char* attribut, char* forme_flec
     // on avance jusqu'a la fin de la liste
     p_node_flechies pnf = pn->formes_flechies;
     if (pnf!=NULL)while (pnf->next != NULL) pnf = pnf->next;
-
     while (ptr!=NULL) {
-
         pnf->next = createNodeFlechies(ptr, forme_flechie);
         pnf = pnf->next;
         pn->nb_formes_flechies+=1;
@@ -68,13 +70,14 @@ void addNodeFlechies(p_node pn, short int type, char* attribut, char* forme_flec
         //on passe au prochain attribut
         ptr = strtok(NULL, delim);
     }
+
     pnf = pn->formes_flechies;
-    printf("LETTRE %c ==> ",pn->value);
+    /*printf("LETTRE %c ==> ",pn->value);
     while(pnf!=NULL){
         printf("[%s;%s] --> ",pnf->mot,pnf->attribut);
         pnf=pnf->next;
     }
-    printf("(null)");
+    printf("(null)");*/
 
 
 }

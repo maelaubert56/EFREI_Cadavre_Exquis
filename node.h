@@ -25,7 +25,7 @@ typedef struct s_node t_node, *p_node;
 
 
 p_node createNode(char);
-p_node_flechies createNodeFlechies(char[], char[]);
+p_node_flechies createNodeFlechies(char*, char*);
 void addNode(p_node, char);
 void addNodeFlechies(p_node, short int, char*, char*);
 
