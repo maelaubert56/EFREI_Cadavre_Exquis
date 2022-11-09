@@ -23,7 +23,6 @@ p_node_flechies createNodeFlechies(char* attribut, char* forme_flechie){
     nouv = (p_node_flechies)malloc(sizeof(t_node_flechies));
     nouv->mot = (char*)malloc((strlen(forme_flechie)+1)*sizeof(char));
     nouv->attribut = (char*)malloc((strlen(attribut)+1)*sizeof(char));
-    //TODO probleme ici, prends tjr le ptr vers attribut donc quand attribut change toutes les formes fléchies changent
     /*nouv->attribut = attribut;
     nouv->mot = forme_flechie;*/
     strcpy(nouv->attribut,attribut);
