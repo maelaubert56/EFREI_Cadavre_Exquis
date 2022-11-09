@@ -20,8 +20,6 @@ int main(int argc, char *argv[]){
     if(OS_Windows)SetConsoleOutputCP(65001); // affichage des caractères en UTF-8 pour inclure les accents
     printf("test accents:\né\nà\në\nê\n\n");
 
-    //TODO REGARDER TODO node.h
-
     srand(time(NULL)); // initialisation du random
 
     //initialisation des arbres de donnee
@@ -50,13 +48,7 @@ int main(int argc, char *argv[]){
 
 
     //test
-    printf("%s\n",findRandomWord(trees,3));
-    printf("%s\n",findRandomWord(trees,3));
-    printf("%s\n",findRandomWord(trees,3));
-    printf("%s\n\n",findRandomWord(trees,3));
-
-
-
+    createSentenceBF(trees,2);
 
 
     //menu
@@ -99,6 +91,7 @@ int main(int argc, char *argv[]){
                 printf("\tErreur...\nQuel modele voulez-vous ?\n\t1)  nom - adjectif - verbe - nom\n\t2) nom - 'qui' - verbe - verbe - nom - adjectif\n\t3) [...]\nVotre choix :");
                 scanf("%d", &choice);
             }
+
         }
     }
     printf("\n\tA bientot ;)");

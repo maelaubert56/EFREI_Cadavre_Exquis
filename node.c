@@ -11,8 +11,10 @@ p_node createNode(char val){
     nouv->depth=-1;
     nouv->nb_formes_flechies = 0;
     nouv->formes_flechies = NULL;
+    nouv->nb_kids = 0;
 
-    for(int i=0;i<29;i++) nouv->next[i] = NULL;
+    nouv->kid = NULL;
+    nouv->sibling = NULL;
     return nouv;
 }
 
@@ -21,7 +23,6 @@ p_node_flechies createNodeFlechies(char* attribut, char* forme_flechie){
     nouv = (p_node_flechies)malloc(sizeof(t_node_flechies));
     nouv->mot = (char*)malloc((strlen(forme_flechie)+1)*sizeof(char));
     nouv->attribut = (char*)malloc((strlen(attribut)+1)*sizeof(char));
-    //TODO probleme ici, prends tjr le ptr vers attribut donc quand attribut change toutes les formes fléchies changent
     /*nouv->attribut = attribut;
     nouv->mot = forme_flechie;*/
     strcpy(nouv->attribut,attribut);
@@ -30,19 +31,14 @@ p_node_flechies createNodeFlechies(char* attribut, char* forme_flechie){
     return nouv;
 }
 
-void addNode(p_node pn, char val){
-    if (((int)val>=97)&&((int)val<=122)){
-        pn->next[((int)val)-97] = createNode(val);
-        pn->next[((int)val)-97]->depth = pn->depth+1;
-    }else if (val == '-') {
-        pn->next[26] = createNode(val);
-        pn->next[26]->depth = pn->depth+1;
-    }else if (val == '.'){
-        pn->next[27] = createNode(val);
-        pn->next[27]->depth = pn->depth+1;
+void addNode(p_node pn, char val, short int direction){ // direction == 0 => sibling
+
+    if(direction == 0){
+        pn->sibling = createNode(val);
+        pn->sibling->depth = pn->depth;
     }else{
-        pn->next[28] = createNode(val); //if (val == ''')
-        pn->next[28]->depth = pn->depth+1;
+        pn->kid = createNode(val);
+        pn->kid->depth = pn->depth+1;
     }
 }
 
