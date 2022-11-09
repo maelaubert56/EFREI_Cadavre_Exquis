@@ -9,67 +9,73 @@ p_node createNode(char val){
     nouv->value = val;
     nouv->end = 0;
     nouv->depth=-1;
+    nouv->nb_formes_flechies = 0;
     nouv->formes_flechies = NULL;
+    nouv->nb_kids = 0;
 
-    for(int i=0;i<29;i++) nouv->next[i] = NULL;
+    nouv->kid = NULL;
+    nouv->sibling = NULL;
     return nouv;
 }
 
-p_node_flechies createNodeFlechies(char* attribut, char *forme_flechie)
-{
+p_node_flechies createNodeFlechies(char* attribut, char* forme_flechie){
     p_node_flechies nouv;
     nouv = (p_node_flechies)malloc(sizeof(t_node_flechies));
-    nouv->attribut = attribut;
-    nouv->mot = forme_flechie;
+    nouv->mot = (char*)malloc((strlen(forme_flechie)+1)*sizeof(char));
+    nouv->attribut = (char*)malloc((strlen(attribut)+1)*sizeof(char));
+    /*nouv->attribut = attribut;
+    nouv->mot = forme_flechie;*/
+    strcpy(nouv->attribut,attribut);
+    strcpy(nouv->mot,forme_flechie);
     nouv->next = NULL;
     return nouv;
 }
 
-void addNode(p_node pn, char val){
-    if (val != '-' && val != '.'&& val != '\''){
-        pn->next[((int)val)-97] = createNode(val);
-        pn->next[((int)val)-97]->depth = pn->depth+1;
-    }else if (val == '-') {
-        pn->next[26] = createNode(val);
-        pn->next[26]->depth = pn->depth+1;
-    }else if (val == '.'){
-        pn->next[27] = createNode(val);
-        pn->next[27]->depth = pn->depth+1;
+void addNode(p_node pn, char val, short int direction){ // direction == 0 => sibling
+
+    if(direction == 0){
+        pn->sibling = createNode(val);
+        pn->sibling->depth = pn->depth;
     }else{
-        pn->next[28] = createNode(val); //if (val == ''')
-        pn->next[28]->depth = pn->depth+1;
+        pn->kid = createNode(val);
+        pn->kid->depth = pn->depth+1;
     }
 }
 
 
 void addNodeFlechies(p_node pn, short int type, char* attribut, char* forme_flechie){ //TODO bug sur les lignes avec plusieurs formes pour un mot fléchis
-
     // si plusieurs attributs, on les sépare
-    printf("%s\t tous les attributs -> %s \n",forme_flechie, attribut);
     char delim[] = ":";
     char *ptr = strtok(attribut, delim);
 
-    //on place la 1ere forme flechie
+    //on place la 1ere forme flechie si la liste est vide
     if (pn->formes_flechies==NULL){
         pn->formes_flechies = createNodeFlechies(ptr, forme_flechie);
-        printf("\tajout de l'attribut %s a la forme %s \n",ptr,forme_flechie);
         ptr = strtok(NULL, delim);
+        pn->nb_formes_flechies+=1;
     }
 
     // on avance jusqu'a la fin de la liste
     p_node_flechies pnf = pn->formes_flechies;
     if (pnf!=NULL)while (pnf->next != NULL) pnf = pnf->next;
-
     while (ptr!=NULL) {
-        printf("\tajout de l'attribut %s a la forme %s \n",ptr,forme_flechie);
-
-        pnf->next = createNodeFlechies(attribut, forme_flechie);
+        pnf->next = createNodeFlechies(ptr, forme_flechie);
         pnf = pnf->next;
+        pn->nb_formes_flechies+=1;
 
         //on passe au prochain attribut
         ptr = strtok(NULL, delim);
     }
-    printf("\n\n\n");
+
+    pnf = pn->formes_flechies;
+    /*printf("LETTRE %c ==> ",pn->value);
+    while(pnf!=NULL){
+        printf("[%s;%s] --> ",pnf->mot,pnf->attribut);
+        pnf=pnf->next;
+    }
+    printf("(null)");*/
+
+
 }
 
 
