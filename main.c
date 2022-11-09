@@ -47,53 +47,54 @@ int main(int argc, char *argv[]){
     loadTrees(dicos[choice-1], trees);
 
 
-    //test
-    createSentenceBF(trees,2);
-
-
     //menu
     while(continuer) {
         printf("Que voulez-vous faire ?\n\t1) Rechercher un mot (forme de base)\n\t2) Extraire une forme de base au hasard.\n\t3) Generer une phrase\n\t4) Quitter\n   ->");
         scanf("%d", &choice);
-        switch (choice) {
+        switch (choice){ //TODO saisie sécurisée (verifier les char)
             case 1: {
                 char* string;
-                printf("Voulez vous \n\t1) un nom\n\t2) un adjectif\n\t3) un verbe\n\t4) un adverbe\n\t5) indifférent\n\t->");
-                scanf("%d", &choice);
+                printf("\nVoulez vous \n\t1) un nom\n\t2) un adjectif\n\t3) un verbe\n\t4) un adverbe\n\t5) indifférent\n\t->");
+                scanf("%d", &choice); // TODO saisie sécurisée
                 printf("Entrez un début de mot, et nous vous trouverons une fin corespondante.\n(pour un mot au hasard, tapez juste \"0\")\n\t->");
-                scanf("%s", string);
+                scanf("%s", string); // TODO saisie sécurisée
 
                 if(string[0]=='0') string = findRandomWord(trees,choice);
-                else string = findEndOfWord(trees, string, choice);
-                printf("Votre mot est : %s\n",string);
+                else string = findEndOfWord(trees, string, choice%5);
+                printf("Votre mot est :\n\t--> %s\n\n\n",string);
                 break;
 
-            }case 2: {
-                printf("2\n");
+            }
+
+            case 2: {
+                printf("Not implemented\n");
                 break;
-            }case 3: {
-                printf("3\n");
+            }
+
+            case 3: {
+                printf("\nQuel modele voulez-vous ?\n\t1)  nom - adjectif - verbe - nom\n\t2) nom - ‘qui’ - verbe - verbe - nom - adjectif\nVotre choix :");
+                scanf("%d", &choice);
+                while(choice<1 || choice>2){ //TODO verifier que c'est pas un char :,)
+                    printf("\tErreur...\nQuel modele voulez-vous ?\n\t1) nom - adjectif - verbe - nom\n\t2) nom - 'qui' - verbe - verbe - nom - adjectif\n\t3) [...]\nVotre choix :");
+                    scanf("%d", &choice);
+                }
+                createSentenceBF(trees,choice);
+                printf("\n\n");
                 break;
-            }case 4:{
+            }
+
+            case 4:{
                 continuer = 0;
+                printf("\n\tA bientot ;)");
                 break;
-            }default : {
+            }
+
+            default : {
                 printf("\tErreur...\nVous devez entrer une valeur entre 1 et 3...\n");
                 break;
             }
         }
-
-        //TODO on peut pas mettre ca direct dans le switch ? ou alors retirer le switch
-        if(choice==3){
-            printf("Quel modele voulez-vous ?\n\t1)  nom - adjectif - verbe - nom\n\t2) nom - ‘qui’ - verbe - verbe - nom - adjectif\n\t3) [...]\nVotre choix :");
-            scanf("%d", &choice);
-            while(choice<1 || choice>3){
-                printf("\tErreur...\nQuel modele voulez-vous ?\n\t1)  nom - adjectif - verbe - nom\n\t2) nom - 'qui' - verbe - verbe - nom - adjectif\n\t3) [...]\nVotre choix :");
-                scanf("%d", &choice);
-            }
-
-        }
     }
-    printf("\n\tA bientot ;)");
+
     return 0;
 }

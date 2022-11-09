@@ -12,9 +12,9 @@
 void createSentenceBF(t_tree* trees,int model){
     printf("Votre phrase générée selon le modèle : ");
     if(model == 1){ // nom - adjectif - verbe - nom
-        printf("nom - adjectif - verbe - nom :\n\t%s %s %s %s\n",findRandomWord(trees,1),findRandomWord(trees,2),findRandomWord(trees,3),findRandomWord(trees,1));
+        printf("nom - adjectif - verbe - nom :\n\t--> %s %s %s %s\n",findRandomWord(trees,1),findRandomWord(trees,2),findRandomWord(trees,3),findRandomWord(trees,1));
     }else if(model == 2) {//nom - 'qui' - verbe - verbe - nom - adjectif
-        printf("nom - 'qui'- verbe - verbe - nom - adjectif :\n\t%s qui %s %s %s %s\n",findRandomWord(trees,1),findRandomWord(trees,3),findRandomWord(trees,3),findRandomWord(trees,1),findRandomWord(trees,2));
+        printf("nom - 'qui'- verbe - verbe - nom - adjectif :\n\t--> %s qui %s %s %s %s\n",findRandomWord(trees,1),findRandomWord(trees,3),findRandomWord(trees,3),findRandomWord(trees,1),findRandomWord(trees,2));
     }
 }
 
