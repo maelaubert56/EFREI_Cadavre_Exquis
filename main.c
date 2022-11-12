@@ -68,13 +68,13 @@ int main(int argc, char *argv[]){
             case 2: {
                 int choice0;
                 int choice1;
-                printf("\nVoulez vous une phrase :\n\t1)  avec des formes de base\n\t2) avec des formes fléchies (conjuguée et accordée)\nVotre choix :");
+                printf("\nVoulez vous une phrase :\n\t1) avec des formes de base\n\t2) avec des formes fléchies (conjuguée et accordée)\nVotre choix :");
                 scanf("%d", &choice0);
                 while(choice0<1 || choice0>2){ //TODO verifier que c'est pas un char :,)
-                    printf("\tErreur...\nVoulez vous une phrase :\n\t1)  avec des formes de base\n\t2) avec des formes fléchies (conjuguée et accordée)\nVotre choix :");
+                    printf("\tErreur...\nVoulez vous une phrase :\n\t1) avec des formes de base\n\t2) avec des formes fléchies (conjuguée et accordée)\nVotre choix :");
                     scanf("%d", &choice0);
                 }
-                printf("\nQuel modele voulez-vous ?\n\t1)  nom - adjectif - verbe - nom\n\t2) nom - ‘qui’ - verbe - verbe - nom - adjectif\nVotre choix :");
+                printf("\nQuel modele voulez-vous ?\n\t1) nom - adjectif - verbe - nom\n\t2) nom - ‘qui’ - verbe - verbe - nom - adjectif\nVotre choix :");
                 scanf("%d", &choice1);
                 while(choice1<1 || choice1>2){ //TODO verifier que c'est pas un char :,)
                     printf("\tErreur...\nQuel modele voulez-vous ?\n\t1) nom - adjectif - verbe - nom\n\t2) nom - 'qui' - verbe - verbe - nom - adjectif\n\t3) [...]\nVotre choix :");

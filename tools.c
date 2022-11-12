@@ -206,9 +206,9 @@ char* findFlexedFormInNode(p_node pn, int type, int genNb[2]){
         }
         else if (type == 3){
             char *ptr = strtok(pnf->attribut, "+");
-            if (strcmp(ptr,"Inf")!=0){
+            if (ptr!=NULL && strcmp(ptr,"Inf")!=0){
                 ptr = strtok(NULL, "+");
-                if(ptr[0]==attribut[0]){
+                if(ptr!=NULL && ptr[0]==attribut[0]){
                     ptr = strtok(NULL, "+");
                     if(ptr[1]=='3') return pnf->mot;
                 }
