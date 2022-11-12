@@ -18,5 +18,5 @@ Avancement du projet:
     - bonus : informer l'utilisateur qu'une forme fléchie manque et lui proposer de l'ajouter (à la main ou automatiquement reecrire le fichier [mieux])
 
 4) EXTRACTION AVANCEE
-    Proposer une recherche de mot parmis les formes fléchies (backtracking)
+    Proposer une recherche de mot parmis les formes fléchies (backtracking) ✔
     - bonus : complétion automatique

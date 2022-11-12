@@ -82,6 +82,8 @@ void addWord(char* forme_flechie, char* forme_de_base,short int type, char* form
     }
 
     // au dernier caractere, on ajoute la formes flechie du mot
+    pn->basic_form = (char*)malloc((strlen(forme_de_base)+1)*sizeof(char));
+    strcpy(pn->basic_form,forme_de_base);
     pn->end = 1;
-    if(type != 4) addNodeFlechies(pn, type, forme, forme_flechie);
+    addNodeFlechies(pn, type, forme, forme_flechie);
 }

@@ -161,12 +161,11 @@ char* tryToFindRandomFlexedWord(t_tree* trees, int num_tree, int genNb[2]){
 
     // on cherche un mot random
     int x;
-    //printf("recherche etat =");
     while(1){
         if((pn->kid == NULL && pn->end == 1) || (pn->end == 1 && rand()%5 == 0)) {//TODO random à ajuster (au x%5)
             printf("\n");
             if(num_tree != 4){
-                string = findFlexedForm(pn, num_tree,genNb);
+                string = findFlexedFormInNode(pn, num_tree,genNb);
                 return string;
 
 
@@ -183,7 +182,7 @@ char* tryToFindRandomFlexedWord(t_tree* trees, int num_tree, int genNb[2]){
     }
 }
 
-char* findFlexedForm(p_node pn, int type, int genNb[2]){
+char* findFlexedFormInNode(p_node pn, int type, int genNb[2]){
     //printf("\t search for flexed form\n");
     char attribut[2];
     if(type == 1||type == 2){
@@ -206,8 +205,13 @@ char* findFlexedForm(p_node pn, int type, int genNb[2]){
             }
         }
         else if (type == 3){
-            if (!(pnf->attribut[0]=='I' && pnf->attribut[1]=='n' && pnf->attribut[2]=='f') && (pnf->attribut[5]==attribut[0])){
-                return pnf->mot;
+            char *ptr = strtok(pnf->attribut, "+");
+            if (strcmp(ptr,"Inf")!=0){
+                ptr = strtok(NULL, "+");
+                if(ptr[0]==attribut[0]){
+                    ptr = strtok(NULL, "+");
+                    if(ptr[1]=='3') return pnf->mot;
+                }
             }
         }
 
@@ -221,4 +225,157 @@ char* findFlexedForm(p_node pn, int type, int genNb[2]){
 int isVowel(char c){
     if(c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') return 1;
     return 0;
+}
+
+p_flexed_def initFindFlexedForm(t_tree* trees, char* string){
+    p_flexed_def pfdef=NULL;
+    int founded = 0, founded1 = 0;
+    for(int k=0;k<4;k++) {
+        findFlexedForm(trees[k].root, string, k, &founded);
+        if(founded==1){
+            founded1=1;
+            printf("\n");
+            founded = 0;
+        }
+    }
+    if(founded1==0)printf("\tFlexed form not found...\n\n");
+    return NULL;
+}
+
+p_flexed_def findFlexedForm(p_node pn, char* string, int type, int* founded){
+    p_flexed_def pfdef= (p_flexed_def)malloc(sizeof(t_flexed_def));
+
+    p_node_flechies pnf=pn->formes_flechies;
+
+    while(pnf!=NULL){
+        if(strcmp(pnf->mot,string)==0){
+            *founded=1;
+            pfdef->basic_form = (char*)malloc((strlen(pn->basic_form)+1)*sizeof(char));
+            pfdef->flexed_form = (char*)malloc((strlen(pnf->mot)+1)*sizeof(char));
+            pfdef->attributs = (char*)malloc((strlen(pnf->attribut)+1)*sizeof(char));
+            strcpy(pfdef->basic_form,pn->basic_form);
+            strcpy(pfdef->flexed_form,pnf->mot);
+            strcpy(pfdef->attributs,pnf->attribut);
+            pfdef->type = type;
+            displayFlexedDetail(pfdef);
+        }
+        pnf=pnf->next;
+    }
+
+    if(pn->kid!=NULL){
+        pfdef = findFlexedForm(pn->kid, string, type,founded);
+        if(pfdef!=NULL) return pfdef;
+    }
+
+    if(pn->sibling!=NULL){
+        pfdef = findFlexedForm(pn->sibling, string, type,founded);
+        if(pfdef!=NULL) return pfdef;
+    }
+
+    return NULL;
+}
+
+void displayFlexedDetail(p_flexed_def pfdef) {
+
+    if(pfdef==NULL)return;
+    int affichage_conj=0;
+
+    printf("\t%s : ",pfdef->flexed_form);
+    if(pfdef->type == 0 || pfdef->type == 1){ // NOMS ou ADJECTIFS
+        if(pfdef->type == 0)printf("nom ");
+        if(pfdef->type == 1)printf("adjectif ");
+        printf("%s, ",pfdef->basic_form);
+        char *ptr = strtok(pfdef->attributs, "+");
+        if(strcmp(ptr,"Mas")==0) printf("masculin ");
+        else if(strcmp(ptr,"Fem")==0) printf("feminin ");
+        else printf("genre indéfini, ");
+
+        ptr = strtok(NULL, "+");
+        if(strcmp(ptr,"SG")==0) printf("singulier");
+        else if(strcmp(ptr,"PL")==0) printf("pluriel");
+        else printf("nombre indéfini.");
+    }
+
+    else if(pfdef->type == 2){ // VERBES
+        printf("verbe %s, ",pfdef->basic_form);
+
+        char *ptr = strtok(pfdef->attributs, "+");
+
+        if(ptr[0] == 'I') { // indicatif ou imperatif
+            if(ptr[1] == 'm') printf("impératif présent");
+            else if(ptr[1] == 'n') printf("infinitif");
+            else {
+                if (strcmp(ptr + 1, "Pre") == 0)printf("present ");
+                else if (strcmp(ptr + 1, "Imp") == 0)printf("imparfait ");
+                else if (strcmp(ptr + 1, "PSim") == 0)printf("passé simple ");
+                else if (strcmp(ptr + 1, "Fut") == 0)printf("futur simple ");
+                else exit(-2);
+
+                printf("de l'indicatif, ");
+                affichage_conj=1;
+            }
+
+        }
+        else if(ptr[0] == 'S') { // subjonctif
+            printf("subjonctif ");
+            if(strcmp(ptr+1,"Pre")==0)printf("présent, ");
+            else if(strcmp(ptr+1,"Imp")==0)printf("imparfait, ");
+            affichage_conj=1;
+        }
+        else if(ptr[0] == 'P'){ // participes (passé ou présent)
+            printf("participe ");
+            if(ptr[2] == 'r'){
+                printf("présent");
+                affichage_conj=2;
+            }
+            else if(ptr[2] == 'a') printf("passé");
+            else exit(-2);
+        }
+        else if(ptr[0] == 'C'){
+            printf("conditionnel présent, ");
+            affichage_conj=1;
+        }
+        else exit(-2);
+
+
+
+        if(affichage_conj==1) {
+
+            ptr = strtok(NULL, "+");
+            if (ptr[0] == 'S') {
+                ptr = strtok(NULL, "+");
+                if (ptr[1] == '1')printf("1ère ");
+                else if (ptr[1] == '2')printf("2ème ");
+                else if (ptr[1] == '3')printf("3ème ");
+                else exit(-2);
+
+                printf("personne du singulier");
+            } else if (ptr[0] == 'P') {
+                ptr = strtok(NULL, "+");
+                if (ptr[1] == '1')printf("1ère ");
+                else if (ptr[1] == '2')printf("2ème ");
+                else if (ptr[1] == '3')printf("3ème ");
+                else exit(-2);
+
+                printf("personne du pluriel");
+            } else exit(-2);
+        }
+        else if (affichage_conj==2){
+            ptr = strtok(NULL, "+");
+            if (ptr!=NULL) {
+                if(strcmp(ptr,"Mas")==0) printf("masculin ");
+                else if(strcmp(ptr,"Fem")==0) printf("feminin ");
+                else printf("genre indéfini, ");
+
+                ptr = strtok(NULL, "+");
+                if(strcmp(ptr,"SG")==0) printf("singulier");
+                else if(strcmp(ptr,"PL")==0) printf("pluriel");
+                else printf("nombre indéfini.");
+            }
+        }
+
+
+
+    }else printf("adverbe"); // ADVERBE
+    printf("\n");
 }

@@ -48,7 +48,7 @@ int main(int argc, char *argv[]){
 
     //menu
     while(continuer) {
-        printf("Que voulez-vous faire ?\n\t1) Rechercher ou extraire une forme de base au hasard.\n\t2) Generer une phrase\n\t3) Quitter\n   ->");
+        printf("Que voulez-vous faire ?\n\t1) Rechercher ou extraire une forme de base au hasard.\n\t2) Generer une phrase\n\t3) Rechecher le détail d'une forme fléchie\n\t4) Quitter\n   ->");
         scanf("%d", &choice);
         switch (choice){ //TODO saisie sécurisée (verifier les char)
             case 1: {
@@ -90,6 +90,14 @@ int main(int argc, char *argv[]){
             }
 
             case 3:{
+                char string[100];
+                printf("Quel mot choisisez vous ?\n");
+                scanf("%s",string);
+                initFindFlexedForm(trees, string);
+                break;
+            }
+
+            case 4:{
                 continuer = 0;
                 printf("\n\tA bientot ;)");
                 break;
