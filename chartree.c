@@ -47,7 +47,7 @@ t_tree createEmptyTree(){
     return nouv;
 }
 
-void addWord(char* forme_flechie, char* forme_de_base,short int type, char* forme , t_tree* t) {
+void addWord(char* forme_flechie, char* forme_de_base,short int type, char* forme , t_tree* t) { // TODO erreur toutes les 1eres lettres de l'arbre des noms a end=1
     p_node pn = t->root;
     p_node temp;
     int i = 0, founded;
@@ -83,5 +83,5 @@ void addWord(char* forme_flechie, char* forme_de_base,short int type, char* form
 
     // au dernier caractere, on ajoute la formes flechie du mot
     pn->end = 1;
-    addNodeFlechies(pn, type, forme, forme_flechie);
+    if(type != 4) addNodeFlechies(pn, type, forme, forme_flechie);
 }
