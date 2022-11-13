@@ -8,6 +8,16 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <conio.h>
+#include <unistd.h>
+
+#ifdef _WIN32
+    #define OS_Windows 1
+    #include <windows.h>
+#endif
+#ifdef __unix__
+    #define OS_Windows 0
+#endif
 
 void createSentenceBF(t_tree* trees,int model){
     printf("Votre phrase générée selon le modèle : ");
@@ -108,9 +118,10 @@ char* findEndOfWord(t_tree* trees, char* beginStr, int num_tree) {
         i = (rand()%4);
         for(int k=0;k<4;k++) {
             char *str_result = findEndOfWord(trees, beginStr, i+1);
-            if (strcmp(str_result, "-1") != 0) return str_result;
+            if (strcmp(str_result, "") != 0) return str_result;
             else i = ((i + 1) % 4);
         }
+        return "";
     }
 
 
@@ -119,7 +130,7 @@ char* findEndOfWord(t_tree* trees, char* beginStr, int num_tree) {
     // on cherche le début du mot dans l'arbre
     p_node pn;
     found = (goToNode(trees[num_tree-1],beginStr,&pn));
-    if(found == -1) return "-1";
+    if(found == -1) return "";
 
     // on cherche la suite
     char* fullStr = (char*)malloc(sizeof(char));
@@ -163,7 +174,6 @@ char* tryToFindRandomFlexedWord(t_tree* trees, int num_tree, int genNb[2]){
     int x;
     while(1){
         if((pn->kid == NULL && pn->end == 1) || (pn->end == 1 && rand()%5 == 0)) {//TODO random à ajuster (au x%5)
-            printf("\n");
             if(num_tree != 4){
                 string = findFlexedFormInNode(pn, num_tree,genNb);
                 return string;
@@ -324,10 +334,8 @@ void displayFlexedDetail(p_flexed_def pfdef) {
         }
         else if(ptr[0] == 'P'){ // participes (passé ou présent)
             printf("participe ");
-            if(ptr[2] == 'r'){
-                printf("présent");
-                affichage_conj=2;
-            }
+            affichage_conj=2;
+            if(ptr[2] == 'r') printf("présent");
             else if(ptr[2] == 'a') printf("passé");
             else exit(-2);
         }
@@ -363,14 +371,14 @@ void displayFlexedDetail(p_flexed_def pfdef) {
         else if (affichage_conj==2){
             ptr = strtok(NULL, "+");
             if (ptr!=NULL) {
-                if(strcmp(ptr,"Mas")==0) printf("masculin ");
-                else if(strcmp(ptr,"Fem")==0) printf("feminin ");
-                else printf("genre indéfini, ");
+                if(strcmp(ptr,"Mas")==0) printf(", masculin ");
+                else if(strcmp(ptr,"Fem")==0) printf(", feminin ");
+                else printf(", genre indéfini ");
 
                 ptr = strtok(NULL, "+");
                 if(strcmp(ptr,"SG")==0) printf("singulier");
                 else if(strcmp(ptr,"PL")==0) printf("pluriel");
-                else printf("nombre indéfini.");
+                else printf(", nombre indéfini.");
             }
         }
 
@@ -378,4 +386,28 @@ void displayFlexedDetail(p_flexed_def pfdef) {
 
     }else printf("adverbe"); // ADVERBE
     printf("\n");
+}
+
+void clearScreen(){
+    #ifdef _WIN32
+        system("cls");
+        Sleep(1);
+    #else
+        usleep(1);
+        system("clear");
+        usleep(1);
+    #endif
+}
+
+void waitForEnter(){
+    printf("Press 'Return' to continue...\n");
+    while(GetAsyncKeyState(VK_RETURN) & 0x8000)Sleep(1);
+    while(!(GetAsyncKeyState(VK_RETURN) & 0x8000))Sleep(1);
+    Sleep(1);
+}
+
+void Color(int couleurDuTexte,int couleurDeFond) // fonction d'affichage de couleurs
+{
+    HANDLE H=GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(H,couleurDeFond*16+couleurDuTexte);
 }

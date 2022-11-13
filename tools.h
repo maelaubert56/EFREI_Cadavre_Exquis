@@ -27,8 +27,9 @@ p_flexed_def findFlexedForm(p_node, char*, int,int*);
 p_flexed_def initFindFlexedForm(t_tree*, char*);
 void displayFlexedDetail(p_flexed_def);
 int isVowel(char c);
-
-
+void clearScreen();
+void waitForEnter();
+void Color(int couleurDuTexte,int couleurDeFond);
 
 
 #endif //PROJET_L2_SDD2_GEN_PHRASES_TOOLS_H

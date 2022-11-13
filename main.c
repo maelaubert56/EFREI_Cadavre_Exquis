@@ -1,24 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "chartree.h"
-#include "node.h"
 #include "time.h"
 #include "tools.h"
-#include <wchar.h>
+#include <unistd.h>
+#include <conio.h>
 
 #ifdef _WIN32
     #define OS_Windows 1
     #include <windows.h>
 #endif
-#ifdef __unix__
-    #define OS_Windows 0
-#endif
+
 
 int main(int argc, char *argv[]){
     if(OS_Windows)SetConsoleOutputCP(65001); // affichage des caractères en UTF-8 pour inclure les accents
-    printf("test accents:\né\nà\në\nê\n\n");
-
     srand(time(NULL)); // initialisation du random
 
     //initialisation des arbres de donnee
@@ -42,30 +37,36 @@ int main(int argc, char *argv[]){
     }
 
     //remplissage des arbres de donnee selon le dictionnaire choisis
-
     loadTrees(dicos[choice-1], trees);
 
+    Sleep(1000);
 
     //menu
     while(continuer) {
-        printf("Que voulez-vous faire ?\n\t1) Rechercher ou extraire une forme de base au hasard.\n\t2) Generer une phrase\n\t3) Rechecher le détail d'une forme fléchie\n\t4) Quitter\n   ->");
+        clearScreen();
+        printf("Que voulez-vous faire ?\n\t1) Rechercher ou extraire une forme de base au hasard.\n\t2) Generer une phrase\n\t3) Rechecher le détail d'une forme fléchie\n\t4) tester la complétion automatique\n\t5) Quitter\n   ->");
+        while ((getchar()) != '\n');
         scanf("%d", &choice);
         switch (choice){ //TODO saisie sécurisée (verifier les char)
             case 1: {
-                char* string;
+                clearScreen();
+                char* string = (char*)malloc(sizeof(char)*100);
                 printf("\nVoulez vous \n\t1) un nom\n\t2) un adjectif\n\t3) un verbe\n\t4) un adverbe\n\t5) indifférent\n\t->");
                 scanf("%d", &choice); // TODO saisie sécurisée
                 printf("Entrez un début de mot, et nous vous trouverons une fin corespondante.\n(pour un mot au hasard, tapez juste \"0\")\n\t->");
                 scanf("%s", string); // TODO saisie sécurisée
-
-                if(string[0]=='0') string = findRandomWord(trees,choice);
+                if(string[0]=='0') string = findRandomWord(trees,choice%5);
                 else string = findEndOfWord(trees, string, choice%5);
-                printf("Votre mot est :\n\t--> %s\n\n\n",string);
+                clearScreen();
+                if(strcmp(string,"")!=0)printf("Votre mot est :\n\t--> %s\n\n",string);
+                else printf("Nous n'avons pas trouvé de mot correspondant...\n\n");
+                waitForEnter();
                 break;
 
             }
 
             case 2: {
+                clearScreen();
                 int choice0;
                 int choice1;
                 printf("\nVoulez vous une phrase :\n\t1) avec des formes de base\n\t2) avec des formes fléchies (conjuguée et accordée)\nVotre choix :");
@@ -80,31 +81,79 @@ int main(int argc, char *argv[]){
                     printf("\tErreur...\nQuel modele voulez-vous ?\n\t1) nom - adjectif - verbe - nom\n\t2) nom - 'qui' - verbe - verbe - nom - adjectif\n\t3) [...]\nVotre choix :");
                     scanf("%d", &choice1);
                 }
+                clearScreen();
                 switch (choice0){
                     case 1: createSentenceBF(trees,choice1);break;
                     case 2: createSentenceFF(trees,choice1);break;
                     default: printf("ERROR");break;
                 }
-                printf("\n\n");
+                printf("\n\n\n");
+                waitForEnter();
                 break;
             }
 
             case 3:{
+                clearScreen();
                 char string[100];
                 printf("Quel mot choisisez vous ?\n");
                 scanf("%s",string);
                 initFindFlexedForm(trees, string);
+                printf("\n\n");
+                waitForEnter();
                 break;
             }
 
             case 4:{
+                clearScreen();
+                printf("Bienvenue, içi vous pouvez tester la complétion automatique.\nPour quitter, faites 'entrée'.\n\n");
+                char tab[1000]="";
+                while (GetAsyncKeyState(VK_RETURN) & 0x8000);
+                while (!(GetAsyncKeyState(VK_RETURN) & 0x8000)) {
+                    for(int i=0; i<0xFE; i++) {
+                        if (GetAsyncKeyState(i) & 0x8000) {
+                            if(GetAsyncKeyState(VK_BACK) & 0x8000){
+                                tab[strlen(tab)-1]='\0';
+                            }else if(GetAsyncKeyState(VK_SPACE) & 0x8000) {
+                                char k = (char) i;
+                                strncat(tab, &k, 1);
+                            }else {
+                                char k = (char) (i + 32);
+                                strncat(tab, &k, 1);
+                            }
+
+                            clearScreen();
+                            printf("Bienvenue, içi vous pouvez tester la complétion automatique.\nPour quitter, faites 'entrée'.\n\n");
+                            printf("%s", tab);
+                            Color(15, 0);
+                            char *temp = findEndOfWord(trees, tab, 0);
+                            Color(8, 0);
+                            if (strcmp(temp, "") != 0)printf("%s", temp + strlen(tab));
+                            Color(15, 0);
+                            //printf("\n\nNous vous suggerons le mot :%s",temp);
+                            while (GetAsyncKeyState(i) & 0x8000);
+
+                        }
+                    }
+                }
+
+                // clear the input
+                int buffer[1000];
+                scanf("%s",buffer);
+                break;
+            }
+
+            case 5:{
+                clearScreen();
                 continuer = 0;
                 printf("\n\tA bientot ;)");
+                Sleep(2000);
                 break;
             }
 
             default : {
+                clearScreen();
                 printf("\tErreur...\nVous devez entrer une valeur entre 1 et 3...\n");
+                Sleep(2000);
                 break;
             }
         }
