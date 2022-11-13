@@ -12,8 +12,23 @@ struct s_flexed_def{
     int type;
     char* attributs;
 };
-
 typedef struct s_flexed_def t_flexed_def, *p_flexed_def;
+
+
+struct s_flexed_form_list{
+    char* word;
+    struct s_flexed_form_list* next;
+};
+typedef struct s_flexed_form_list t_flexed_form_list, *p_flexed_form_list;
+
+struct s_flexed_form_head{
+    p_flexed_form_list root;
+};
+typedef struct s_flexed_form_head t_flexed_form_head, *p_flexed_form_head;
+
+
+
+
 
 char* findRandomWord(t_tree*, int );
 char* tryToFindRandomFlexedWord(t_tree*, int, int[2]);
@@ -30,6 +45,8 @@ int isVowel(char c);
 void clearScreen();
 void waitForEnter();
 void Color(int couleurDuTexte,int couleurDeFond);
+char* sugestFlexedForm(t_tree*, char*);
+int findEndOfFlexedForm(p_node, p_flexed_form_head , char*);
 
 
 #endif //PROJET_L2_SDD2_GEN_PHRASES_TOOLS_H

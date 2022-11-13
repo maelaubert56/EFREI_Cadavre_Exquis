@@ -16,6 +16,9 @@ int main(int argc, char *argv[]){
     if(OS_Windows)SetConsoleOutputCP(65001); // affichage des caractères en UTF-8 pour inclure les accents
     srand(time(NULL)); // initialisation du random
 
+    printf("Bienvenue, pour utiliser au mieux ce programme, n'utilisez pas la console intégrée à votre éditeur de code.\n\n");
+    waitForEnter();
+
     //initialisation des arbres de donnee
     t_tree t_nom, t_ver, t_adj, t_adv;
     t_nom = createEmptyTree();
@@ -26,7 +29,6 @@ int main(int argc, char *argv[]){
 
 
     int choice, continuer=1;
-
     // choix parmis la liste des differents dictionnaires proposés
     char dicos[4][100] = {"..\\dictionnaire.txt","..\\dictionnaire_non_accentue.txt","..\\dico_10_lignes.txt","..\\mots_courts.txt"};
     printf("Quel dictionnaire voulez vous utiliser ?\n\t1) %s\n\t2) %s\n\t3) %s\n\t4) %s\n   ->",dicos[0],dicos[1],dicos[2],dicos[3]);
@@ -41,11 +43,12 @@ int main(int argc, char *argv[]){
 
     Sleep(1000);
 
+
     //menu
     while(continuer) {
         clearScreen();
+        fflush(stdin);
         printf("Que voulez-vous faire ?\n\t1) Rechercher ou extraire une forme de base au hasard.\n\t2) Generer une phrase\n\t3) Rechecher le détail d'une forme fléchie\n\t4) tester la complétion automatique\n\t5) Quitter\n   ->");
-        while ((getchar()) != '\n');
         scanf("%d", &choice);
         switch (choice){ //TODO saisie sécurisée (verifier les char)
             case 1: {
@@ -104,41 +107,77 @@ int main(int argc, char *argv[]){
             }
 
             case 4:{
+                char *temp;
                 clearScreen();
-                printf("Bienvenue, içi vous pouvez tester la complétion automatique.\nPour quitter, faites 'entrée'.\n\n");
-                char tab[1000]="";
-                while (GetAsyncKeyState(VK_RETURN) & 0x8000);
-                while (!(GetAsyncKeyState(VK_RETURN) & 0x8000)) {
-                    for(int i=0; i<0xFE; i++) {
+                printf("Bienvenue, içi vous pouvez tester la complétion automatique.\nPour quitter, faites 'échap'.\n\n");
+                char all_caracters[1000]="";
+                char current_word[1000]="";
+                while ((getchar()) != '\n');
+                fflush(stdin);
+                while (GetAsyncKeyState(VK_RETURN & 0x8000))Sleep(1);
+                int continuer = 1;
+                while (continuer){
+                    for(int i=0; i<0xFE; i++){
+                        if(GetAsyncKeyState(VK_ESCAPE) & 0x8000)continuer = 0;// partir de la fonctionnalité
                         if (GetAsyncKeyState(i) & 0x8000) {
-                            if(GetAsyncKeyState(VK_BACK) & 0x8000){
-                                tab[strlen(tab)-1]='\0';
-                            }else if(GetAsyncKeyState(VK_SPACE) & 0x8000) {
-                                char k = (char) i;
-                                strncat(tab, &k, 1);
-                            }else {
+                            /*printf("%d",i);
+                            Sleep(1000);*/
+                            if(GetAsyncKeyState(VK_TAB) & 0x8000)strcat(all_caracters,temp + strlen(current_word));
+                            else if(GetAsyncKeyState(VK_BACK) & 0x8000)all_caracters[strlen(all_caracters)-1]='\0';
+                            else if(GetAsyncKeyState(VK_RETURN) & 0x8000) { // spaces
+                                char k = '\n';
+                                strncat(all_caracters, &k, 1);
+                            }else if(GetAsyncKeyState(VK_SPACE) & 0x8000) { // spaces
+                                char k = ' ';
+                                strncat(all_caracters, &k, 1);
+                            }else if(i>=0x41 && i<=0x5A){ // lettres
                                 char k = (char) (i + 32);
-                                strncat(tab, &k, 1);
+                                strncat(all_caracters, &k, 1);
+                            }else if(i>=0xBB && i<=0xC0){ // caractères spéciaux
+                                char k = (char) (i);
+                                strncat(all_caracters, &k, 1);
+                            }else if(i>=0x97 && i<=0x105){ // lettres
+                                char k = (char) (i-49);
+                                strncat(all_caracters, &k, 1);
+                            }else if(i==0x36){ // lettres
+                                char k = (char) ('-');
+                                strncat(all_caracters, &k, 1);
+                            }else if(i==0x34){ // lettres
+                                char k = (char) ('\'');
+                                strncat(all_caracters, &k, 1);
                             }
-
                             clearScreen();
-                            printf("Bienvenue, içi vous pouvez tester la complétion automatique.\nPour quitter, faites 'entrée'.\n\n");
-                            printf("%s", tab);
+                            printf("Bienvenue, içi vous pouvez tester la complétion automatique.\nPour quitter, faites 'echap'.\n\n");
+                            printf("%s", all_caracters);
+
                             Color(15, 0);
-                            char *temp = findEndOfWord(trees, tab, 0);
+                            int k=0;
+                            for(int j=0; j<strlen(all_caracters); j++){
+                                if(all_caracters[j]=='\n' || all_caracters[j]==' ' || all_caracters[j]==',' || all_caracters[j]==';' || all_caracters[j]==':'|| all_caracters[j]=='.'|| all_caracters[j]=='!'|| all_caracters[j]=='?'){
+                                    k=0;
+                                }else{
+                                    current_word[k]=all_caracters[j];
+                                    k++;
+                                }
+                            }current_word[k]='\0';
+                            //printf("\n%s\n",current_word);
+                            temp = sugestFlexedForm(trees, current_word);
+                            // TODO parfois ne propose pas de mot (quand la forme flechie est de la meme taille que e mot ( exemple : "test")
+
                             Color(8, 0);
-                            if (strcmp(temp, "") != 0)printf("%s", temp + strlen(tab));
+                            if (strcmp(temp, "") != 0 && strlen(current_word)<strlen(temp)){
+                                printf("%s", temp + strlen(current_word));
+                                //printf("\n\nNous vous suggerons le mot :%s",temp);
+                            }
                             Color(15, 0);
-                            //printf("\n\nNous vous suggerons le mot :%s",temp);
-                            while (GetAsyncKeyState(i) & 0x8000);
+                            while(GetAsyncKeyState(i) & 0x8000);
 
                         }
                     }
                 }
-
+                printf("STOPP");
                 // clear the input
-                int buffer[1000];
-                scanf("%s",buffer);
+                //while ((getchar()) != '\n');
                 break;
             }
 
@@ -146,7 +185,7 @@ int main(int argc, char *argv[]){
                 clearScreen();
                 continuer = 0;
                 printf("\n\tA bientot ;)");
-                Sleep(2000);
+                Sleep(1000);
                 break;
             }
 

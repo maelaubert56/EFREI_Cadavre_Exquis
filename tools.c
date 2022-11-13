@@ -401,6 +401,7 @@ void clearScreen(){
 
 void waitForEnter(){
     printf("Press 'Return' to continue...\n");
+    fflush(stdout);
     while(GetAsyncKeyState(VK_RETURN) & 0x8000)Sleep(1);
     while(!(GetAsyncKeyState(VK_RETURN) & 0x8000))Sleep(1);
     Sleep(1);
@@ -411,3 +412,79 @@ void Color(int couleurDuTexte,int couleurDeFond) // fonction d'affichage de coul
     HANDLE H=GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(H,couleurDeFond*16+couleurDuTexte);
 }
+
+char* sugestFlexedForm(t_tree* trees, char* begin_flexed_form){
+    if(strlen(begin_flexed_form)<3)return"";
+    t_flexed_form_head pffhead;
+    pffhead.root = NULL;
+    int nb_of_flexed_forms= 0;
+
+    // on parcours les 4 arbres
+    for(int k=0;k<4;k++) {
+        nb_of_flexed_forms += findEndOfFlexedForm(trees[k].root, &pffhead, begin_flexed_form); // on ajoute les formes fléchie au tableau et on update le nombre de formes
+    }
+    //printf("\nnb ff : %d",nb_of_flexed_forms);
+    if(nb_of_flexed_forms < 100 && nb_of_flexed_forms!=0){
+        p_flexed_form_list pfflist =  pffhead.root;
+        char* temp;
+        //printf("\nstop at: %d",stop);
+        //printf("\n1) %s",pfflist->word);
+        while (pfflist != NULL) {
+            if(strlen(temp)>strlen(pfflist->word)) temp = pfflist->word;
+            pfflist = pfflist->next;
+            //printf("\n%d) %s",i+1,pfflist->word);
+        }
+        return temp;
+    }
+    else return "";
+}
+
+int findEndOfFlexedForm(p_node pn, p_flexed_form_head pffhead, char* begin_flexed_form){
+    int nb_of_flexed_forms=0;
+
+
+    p_node_flechies pnf=pn->formes_flechies;
+    //if(pnf!=NULL)printf("%s ",pn->formes_flechies->mot);
+    while(pnf!=NULL){
+
+        int i=0, finded=1;
+        if(strlen(pnf->mot)<strlen(begin_flexed_form)) finded = 0;
+
+        while(begin_flexed_form[i]!='\0' && finded == 1 ){
+            //printf("%s",pnf->mot);
+            if(begin_flexed_form[i]!=pnf->mot[i]) finded = 0;
+            i++;
+        }
+
+        if(finded==1){ //TODO changer la condition pour ne pas accepter que le mot entier
+            if(pffhead->root==NULL){
+                pffhead->root = (p_flexed_form_list)malloc(sizeof(t_flexed_form_list));
+                pffhead->root->word = pnf->mot;
+                pffhead->root->next = NULL;
+            }
+            else {
+                p_flexed_form_list temp = pffhead->root;
+                while (temp->next != NULL) {
+                    temp = temp->next;
+                }
+                temp->next = (p_flexed_form_list) malloc(sizeof(t_flexed_form_list));
+                temp=temp->next;
+                temp->word = pnf->mot;
+                temp->next = NULL;
+            }
+            nb_of_flexed_forms+=1;
+        }
+        pnf=pnf->next;
+    }
+
+    if(pn->kid!=NULL){
+        nb_of_flexed_forms+= findEndOfFlexedForm(pn->kid, pffhead, begin_flexed_form);
+    }
+
+    if(pn->sibling!=NULL){
+        nb_of_flexed_forms+= findEndOfFlexedForm(pn->sibling, pffhead, begin_flexed_form);
+    }
+    //if(pn->kid==NULL && pn->sibling==NULL) printf("\n1\n");
+    return nb_of_flexed_forms;
+}
+

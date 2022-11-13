@@ -47,7 +47,7 @@ t_tree createEmptyTree(){
     return nouv;
 }
 
-void addWord(char* forme_flechie, char* forme_de_base,short int type, char* forme , t_tree* t) { // TODO erreur toutes les 1eres lettres de l'arbre des noms a end=1
+void addWord(char* forme_flechie, char* forme_de_base,short int type, char* forme , t_tree* t) {
     p_node pn = t->root;
     p_node temp;
     int i = 0, founded;
