@@ -9,6 +9,7 @@ p_node createNode(char val){
     nouv->value = val;
     nouv->end = 0;
     nouv->depth=-1;
+    nouv->basic_form = NULL;
     nouv->nb_formes_flechies = 0;
     nouv->formes_flechies = NULL;
     nouv->nb_kids = 0;

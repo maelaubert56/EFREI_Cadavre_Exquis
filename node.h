@@ -18,6 +18,7 @@ struct s_node{
     struct s_node* kid, *sibling;
     short int nb_kids;
     short int depth;
+    char* basic_form;
     int nb_formes_flechies;
     p_node_flechies formes_flechies;
 };
