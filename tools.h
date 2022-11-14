@@ -39,12 +39,12 @@ void createSentenceBF(t_tree*, int);
 void createSentenceFF(t_tree*, int);
 char* findFlexedFormInNode(p_node, int, int[2]);
 p_flexed_def findFlexedForm(p_node, char*, int,int*);
-p_flexed_def initFindFlexedForm(t_tree*, char*);
+void initFindFlexedForm(t_tree*, char*);
 void displayFlexedDetail(p_flexed_def);
 int isVowel(char c);
 void clearScreen();
 void waitForEnter();
-void Color(int couleurDuTexte,int couleurDeFond);
+void Color(int text_color, int background_color);
 char* sugestFlexedForm(t_tree*, char*);
 int findEndOfFlexedForm(p_node, p_flexed_form_head , char*);
 

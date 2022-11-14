@@ -4,12 +4,12 @@
 
 
 
-struct s_node_flechies{
-    char* attribut;
-    char* mot;
-    struct s_node_flechies* next;
+struct s_flexed_node{
+    char* attribute;
+    char* word;
+    struct s_flexed_node* next;
 };
-typedef struct s_node_flechies t_node_flechies, *p_node_flechies;
+typedef struct s_flexed_node t_flexed_node, *p_flexed_node;
 
 
 struct s_node{
@@ -19,15 +19,15 @@ struct s_node{
     short int nb_kids;
     short int depth;
     char* basic_form;
-    int nb_formes_flechies;
-    p_node_flechies formes_flechies;
+    int nb_flexed_forms;
+    p_flexed_node flexed_forms;
 };
 typedef struct s_node t_node, *p_node;
 
 
 p_node createNode(char);
-p_node_flechies createNodeFlechies(char*, char*);
+p_flexed_node createFlexedNode(char*, char*);
 void addNode(p_node, char, short int);
-void addNodeFlechies(p_node, short int, char*, char*);
+void addFlexedNode(p_node pn, char *attribute, char *flexedForm);
 
 #endif //PROJET_L2_SDD2_GEN_PHRASES_NODE_H
