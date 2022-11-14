@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include "node.h"
 #include <string.h>
 
@@ -10,8 +9,8 @@ p_node createNode(char val){
     nouv->end = 0;
     nouv->depth=-1;
     nouv->basic_form = NULL;
-    nouv->nb_formes_flechies = 0;
-    nouv->formes_flechies = NULL;
+    nouv->nb_flexed_forms = 0;
+    nouv->flexed_forms = NULL;
     nouv->nb_kids = 0;
 
     nouv->kid = NULL;
@@ -19,17 +18,15 @@ p_node createNode(char val){
     return nouv;
 }
 
-p_node_flechies createNodeFlechies(char* attribut, char* forme_flechie){
-    p_node_flechies nouv;
-    nouv = (p_node_flechies)malloc(sizeof(t_node_flechies));
-    nouv->mot = (char*)malloc((strlen(forme_flechie)+1)*sizeof(char));
-    nouv->attribut = (char*)malloc((strlen(attribut)+1)*sizeof(char));
-    /*nouv->attribut = attribut;
-    nouv->mot = forme_flechie;*/
-    strcpy(nouv->attribut,attribut);
-    strcpy(nouv->mot,forme_flechie);
-    nouv->next = NULL;
-    return nouv;
+p_flexed_node createFlexedNode(char* attribute, char* flexed_form){
+    p_flexed_node new;
+    new = (p_flexed_node)malloc(sizeof(t_flexed_node));
+    new->word = (char*)malloc((strlen(flexed_form) + 1) * sizeof(char));
+    new->attribute = (char*)malloc((strlen(attribute) + 1) * sizeof(char));
+    strcpy(new->attribute, attribute);
+    strcpy(new->word, flexed_form);
+    new->next = NULL;
+    return new;
 }
 
 void addNode(p_node pn, char val, short int direction){ // direction == 0 => sibling
@@ -44,38 +41,28 @@ void addNode(p_node pn, char val, short int direction){ // direction == 0 => sib
 }
 
 
-void addNodeFlechies(p_node pn, short int type, char* attribut, char* forme_flechie){ //TODO bug sur les lignes avec plusieurs formes pour un mot fléchis
+void addFlexedNode(p_node pn, char* attribute, char* flexedForm){ //TODO bug sur les lignes avec plusieurs formes pour un word fléchis
     // si plusieurs attributs, on les sépare
-    char delim[] = ":";
-    char *ptr = strtok(attribut, delim);
+    char *ptr = strtok(attribute, ":");
 
     //on place la 1ere forme flechie si la liste est vide
-    if (pn->formes_flechies==NULL){
-        pn->formes_flechies = createNodeFlechies(ptr, forme_flechie);
-        ptr = strtok(NULL, delim);
-        pn->nb_formes_flechies+=1;
+    if (pn->flexed_forms == NULL){
+        pn->flexed_forms = createFlexedNode(ptr, flexedForm);
+        ptr = strtok(NULL, ":");
+        pn->nb_flexed_forms+=1;
     }
 
     // on avance jusqu'a la fin de la liste
-    p_node_flechies pnf = pn->formes_flechies;
+    p_flexed_node pnf = pn->flexed_forms;
     if (pnf!=NULL)while (pnf->next != NULL) pnf = pnf->next;
     while (ptr!=NULL) {
-        pnf->next = createNodeFlechies(ptr, forme_flechie);
+        pnf->next = createFlexedNode(ptr, flexedForm);
         pnf = pnf->next;
-        pn->nb_formes_flechies+=1;
+        pn->nb_flexed_forms+=1;
 
-        //on passe au prochain attribut
-        ptr = strtok(NULL, delim);
+        //on passe au prochain attribute
+        ptr = strtok(NULL, ":");
     }
-
-    pnf = pn->formes_flechies;
-    /*printf("LETTRE %c ==> ",pn->value);
-    while(pnf!=NULL){
-        printf("[%s;%s] --> ",pnf->mot,pnf->attribut);
-        pnf=pnf->next;
-    }
-    printf("(null)");*/
-
 
 }
 
