@@ -41,7 +41,7 @@ void addNode(p_node pn, char val, short int direction){ // direction == 0 => sib
 }
 
 
-void addFlexedNode(p_node pn, char* attribute, char* flexedForm){ //TODO bug sur les lignes avec plusieurs formes pour un word fléchis
+void addFlexedNode(p_node pn, char* attribute, char* flexedForm){
     // si plusieurs attributs, on les sépare
     char *ptr = strtok(attribute, ":");
 

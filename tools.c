@@ -20,7 +20,7 @@ void createSentenceBF(t_tree* trees,int model){
 }
 
 void createSentenceFF(t_tree* trees,int model){
-    int choice1[2] = {rand() % 2, rand() % 2};
+    int choice1[2] = {rand() % 2, rand() % 2}; // {genre;nombre}
     int choice2[2] = {rand() % 2, rand() % 2};
     char* pronoun1;
     char* pronoun2;
@@ -129,7 +129,7 @@ char* findEndOfWord(t_tree* trees, char* begin_str, int num_tree) {
 
     int x;
     while(found == 0) {
-        if((pn->kid == NULL && pn->end == 1) || (pn->end == 1 && rand()%5 == 0)) found = 1; //TODO random a ajuster (au x%5)
+        if((pn->kid == NULL && pn->end == 1) || (pn->end == 1 && rand()%5 == 0)) found = 1;
         else {
             x=rand()%pn->nb_kids;
             pn = pn->kid;
@@ -164,11 +164,10 @@ char* tryToFindRandomFlexedWord(t_tree* trees, int num_tree, int genNb[2]){
     // on cherche un word random
     int x;
     while(1){
-        if((pn->kid == NULL && pn->end == 1) || (pn->end == 1 && rand()%5 == 0)) {//TODO random à ajuster (au x%5)
+        if((pn->kid == NULL && pn->end == 1) || (pn->end == 1 && rand()%5 == 0)) {
             if(num_tree != 4){
                 string = findFlexedFormInNode(pn, num_tree,genNb);
                 return string;
-
 
             }else return pn->flexed_forms->word;
 
@@ -192,7 +191,7 @@ char* findFlexedFormInNode(p_node pn, int type, int genNb[2]){
         if (genNb[1] == 0)attribute[1]='S';
         else if (genNb[1] == 1)attribute[1]='P';
     }
-    else if(type == 3){ //TODO pour l'instant les verbes sont seulement à la 3eme personne
+    else if(type == 3){
         if (genNb[1] == 0)attribute[0]='S';
         else if (genNb[1] == 1)attribute[0]='P';
     }
@@ -433,7 +432,7 @@ int findEndOfFlexedForm(p_node pn, p_flexed_form_head pffhead, char* begin_flexe
             i++;
         }
 
-        if(finded==1){ //TODO changer la condition pour ne pas accepter que le word entier
+        if(finded==1){
             if(pffhead->root==NULL){
                 pffhead->root = (p_flexed_form_list)malloc(sizeof(t_flexed_form_list));
                 pffhead->root->word = pnf->word;
