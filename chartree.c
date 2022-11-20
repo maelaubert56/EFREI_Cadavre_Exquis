@@ -11,8 +11,11 @@ void loadTrees(char* file, t_tree tree[4]){
 
     FILE* f = fopen(file, "r");
     if (f == NULL) {
-        printf("\tERREUR : le fichier n'existe pas\n");
-        exit(1);
+        f = fopen("dictionnaire_non_accentue.txt", "r");
+        if (f == NULL) {
+            printf("\tERREUR : le fichier n'existe pas\n");
+            exit(1);
+        }
     }
     rewind(f); // on met le curseur au début du fichier
 

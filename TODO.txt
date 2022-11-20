@@ -4,7 +4,6 @@ Avancement du projet:
     Mettre en place les bases de donnée ✔
     Stocker les formes de base ✔
     Stocker les formes fléchies ✔
-    Proposer l'ajout des mots avec accents
 
 2) EXTRACTION
     Proposer une recherche de word parmis les formes de base ✔
@@ -14,9 +13,7 @@ Avancement du projet:
     Générer des phrases au hasard: (modèles: : nom – adjectif – verbe – nom & : nom – ‘qui’ – verbe – verbe – nom – adjectif )
         Avec les formes de base ✔
         Avec les formes fléchies (conjugée et accordées [3eme personne vu le modele]) ✔
-    - bonus : ajouter des modèles de phrases plus complèxes ( pronom - verbe - adverbe - nom - adjectif) par exemple
-    - bonus : informer l'utilisateur qu'une forme fléchie manque et lui proposer de l'ajouter (à la main ou automatiquement reecrire le fichier [mieux])
 
 4) EXTRACTION AVANCEE
     Proposer une recherche de word parmis les formes fléchies (backtracking) ✔
-    - bonus : complétion automatique
+    - bonus : complétion automatique ✔

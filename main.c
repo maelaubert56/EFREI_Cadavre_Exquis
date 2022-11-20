@@ -15,7 +15,6 @@ int main(int argc, char *argv[]){
     printf("\nBienvenue, pour utiliser au mieux ce programme, n'utilisez pas la console intégrée à votre éditeur de code,\nmais lancez le prgramme via le terminal (ou en lancant le .exe).\n\n");
     waitForEnter();
     clearScreen();
-
     //initialisation des arbres de donnee
     t_tree t_nom, t_ver, t_adj, t_adv;
     t_nom = createEmptyTree();
@@ -26,10 +25,9 @@ int main(int argc, char *argv[]){
 
 
     int choice, keep_going=1;
-    // choix parmis la liste des differents dictionnaires proposés
     char dico[100] = "..\\dictionnaire_non_accentue.txt";
 
-    //remplissage des arbres de donnee selon le dictionnaire choisis
+    //remplissage des arbres de donnee
     loadTrees(dico, trees);
 
     Sleep(1000);
