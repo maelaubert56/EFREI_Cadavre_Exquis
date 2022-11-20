@@ -20,14 +20,15 @@ void createSentenceBF(t_tree* trees,int model){
 }
 
 void createSentenceFF(t_tree* trees,int model){
-    int choice1[2] = {rand() % 2, rand() % 2};
+    //choix des accords
+    int choice1[2] = {rand() % 2, rand() % 2}; // {genre;nombre}
     int choice2[2] = {rand() % 2, rand() % 2};
     char* pronoun1;
     char* pronoun2;
 
 
 
-
+    // création des pronom
     if(choice1[1] == 0){
         if(choice1[0] == 0)pronoun1 = "Le";
         else pronoun1 = "La";
@@ -44,7 +45,6 @@ void createSentenceFF(t_tree* trees,int model){
 
     printf("\nVotre phrase générée selon le modèle : ");
     if(model == 1){ // nom - adjectif - verbe - nom
-        //choisir un genre et un nombre de facon random
         words[0] = pronoun1;
         words[1] = findRandomFlexedWord(trees, 1, choice1);
         words[2] = findRandomFlexedWord(trees, 2, choice1);
@@ -129,7 +129,7 @@ char* findEndOfWord(t_tree* trees, char* begin_str, int num_tree) {
 
     int x;
     while(found == 0) {
-        if((pn->kid == NULL && pn->end == 1) || (pn->end == 1 && rand()%5 == 0)) found = 1; //TODO random a ajuster (au x%5)
+        if((pn->kid == NULL && pn->end == 1) || (pn->end == 1 && rand()%5 == 0)) found = 1;
         else {
             x=rand()%pn->nb_kids;
             pn = pn->kid;
@@ -149,6 +149,7 @@ char* findRandomWord(t_tree* trees, int num_tree){
 }
 
 char* findRandomFlexedWord(t_tree* trees, int num_tree, int genNb[2]){
+    // initialise
     char* string = "-1";
     while(strcmp(string,"-1")==0){
         string = tryToFindRandomFlexedWord(trees, num_tree, genNb);
@@ -161,14 +162,14 @@ char* tryToFindRandomFlexedWord(t_tree* trees, int num_tree, int genNb[2]){
     int i;
     p_node pn = trees[num_tree-1].root;
 
-    // on cherche un word random
+    // on cherche un mot random
     int x;
     while(1){
-        if((pn->kid == NULL && pn->end == 1) || (pn->end == 1 && rand()%5 == 0)) {//TODO random à ajuster (au x%5)
+        if((pn->kid == NULL && pn->end == 1) || (pn->end == 1 && rand()%5 == 0)) {
             if(num_tree != 4){
+                // si le mot est trouvé, on cherche une forme fléchie corespondante
                 string = findFlexedFormInNode(pn, num_tree,genNb);
                 return string;
-
 
             }else return pn->flexed_forms->word;
 
@@ -192,7 +193,7 @@ char* findFlexedFormInNode(p_node pn, int type, int genNb[2]){
         if (genNb[1] == 0)attribute[1]='S';
         else if (genNb[1] == 1)attribute[1]='P';
     }
-    else if(type == 3){ //TODO pour l'instant les verbes sont seulement à la 3eme personne
+    else if(type == 3){
         if (genNb[1] == 0)attribute[0]='S';
         else if (genNb[1] == 1)attribute[0]='P';
     }
@@ -201,11 +202,13 @@ char* findFlexedFormInNode(p_node pn, int type, int genNb[2]){
     p_flexed_node pnf = pn->flexed_forms;
     while(pnf!= NULL){
         if(type == 1||type == 2){
+            // on teste si les attributs corespondent
             if((pnf->attribute[0]=='I'|| pnf->attribute[0] == attribute[0]) && ((pnf->attribute[4] == attribute[1]) || (pnf->attribute[4] != attribute[1]) && pnf->attribute[7] == attribute[1])){
                 return pnf->word;
             }
         }
         else if (type == 3){
+            // on teste si les attributs corespondent
             char *ptr = strtok(pnf->attribute, "+");
             if (ptr!=NULL && strcmp(ptr,"Inf")!=0){
                 ptr = strtok(NULL, "+");
@@ -249,6 +252,7 @@ p_flexed_def findFlexedForm(p_node pn, char* string, int type, int* founded){
 
     while(pnf!=NULL){
         if(strcmp(pnf->word, string) == 0){
+            //si on a trouvé la forme fléchie, on met toutes les infos dans une structure et on affiche le contenu de cette structure
             *founded=1;
             pfdef->basic_form = (char*)malloc((strlen(pn->basic_form)+1)*sizeof(char));
             pfdef->flexed_form = (char*)malloc((strlen(pnf->word) + 1) * sizeof(char));
@@ -419,6 +423,7 @@ char* sugestFlexedForm(t_tree* trees, char* begin_flexed_form){
     else return "";
 }
 
+
 int findEndOfFlexedForm(p_node pn, p_flexed_form_head pffhead, char* begin_flexed_form){
     int nb_of_flexed_forms=0;
 
@@ -433,7 +438,7 @@ int findEndOfFlexedForm(p_node pn, p_flexed_form_head pffhead, char* begin_flexe
             i++;
         }
 
-        if(finded==1){ //TODO changer la condition pour ne pas accepter que le word entier
+        if(finded==1){
             if(pffhead->root==NULL){
                 pffhead->root = (p_flexed_form_list)malloc(sizeof(t_flexed_form_list));
                 pffhead->root->word = pnf->word;
